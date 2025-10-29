@@ -1,0 +1,50 @@
+import express from "express";
+import multer from "multer";
+import { readFileSync } from "fs";
+import { JsonRpcProvider, Wallet, Contract, keccak256, isAddress } from "ethers";
+import "dotenv/config";
+
+const upload = multer({ dest: "uploads/" });
+const app = express();
+
+const provider = new JsonRpcProvider(process.env.RPC_URL);
+const wallet = new Wallet(process.env.PRIVATE_KEY, provider);
+
+const contractAddress = process.env.CONTRACT_ADDRESS;
+if (!isAddress(contractAddress)) {
+  console.error("CONTRACT_ADDRESS inválida. Actualiza .env con la dirección desplegada (0x...)");
+  process.exit(1);
+}
+
+const abi = [
+  "function notarize(bytes32 fileHash, string uri)",
+  "function isNotarized(bytes32) view returns (bool,address,uint256,string)",
+];
+
+const contract = new Contract(contractAddress, abi, wallet);
+
+app.post("/notarize", upload.single("file"), async (req, res) => {
+  try {
+    const fileBuf = readFileSync(req.file.path);
+    const fileHash = keccak256(fileBuf);
+    const tx = await contract.notarize(fileHash, "");
+    const receipt = await tx.wait();
+    res.json({ fileHash, txHash: tx.hash, blockNumber: receipt.blockNumber });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: String(err?.message || err) });
+  }
+});
+
+app.get("/verify", async (req, res) => {
+  try {
+    const { hash } = req.query;
+    const [exists, owner, timestamp, uri] = await contract.isNotarized(hash);
+    res.json({ exists, owner, timestamp, uri });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: String(err?.message || err) });
+  }
+});
+
+app.listen(3000, () => console.log("Servidor en http://localhost:3000"));
