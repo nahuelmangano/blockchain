@@ -1,0 +1,75 @@
+:root{--bg:#f6f8fb;--card:#fff;--accent:#334155;--muted:#6b7280}
+*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial}
+html,body,#root{height:100%}
+body{margin:0;background:linear-gradient(180deg,var(--bg),#eef2ff);padding:24px;color:var(--accent)}
+.container{max-width:760px;margin:0 auto}
+h1{text-align:center;margin:8px 0 20px}
+.card{background:var(--card);padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.06);margin-bottom:16px}
+form{display:flex;gap:8px;align-items:center}
+input[type="file"]{flex:1}
+input[type="text"]{flex:1;padding:8px;border:1px solid #e6e9ef;border-radius:6px}
+button{background:#4f46e5;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer}
+.result{
+	background:#0f1724;
+	color:#e6eef8;
+	padding:12px;
+	border-radius:8px;
+	margin-top:10px;
+	width:100%;
+	box-sizing:border-box;
+	/* allow long hashes/strings to wrap instead of causing horizontal scroll */
+	white-space: pre-wrap; /* keep line breaks but wrap long lines */
+	word-break: break-word; /* break long words (hashes) */
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+	font-size: 0.95rem;
+	line-height: 1.4;
+	/* limit height so very long outputs don't push the page; enable scrolling */
+	max-height: 280px;
+	overflow: auto;
+}
+footer{margin-top:8px;text-align:center;color:var(--muted)}
+
+/* Spinner and loading button styles */
+.spinner{
+  display:inline-block;
+  width:18px;
+  height:18px;
+  border:3px solid rgba(255,255,255,0.18);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  vertical-align:middle;
+  margin-right:8px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.btn-loading{opacity:0.95;cursor:default}
+.btn-loading[disabled]{cursor:not-allowed;opacity:0.9}
+
+/* Responsive adjustments */
+@media (max-width: 880px) {
+	.container{padding:0 16px}
+	.card{padding:16px}
+}
+
+/* Make form inputs wrap and stack on small screens */
+form{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+form > input[type="file"],
+form > input[type="text"]{flex:1 1 220px;min-width:0}
+form > button{flex:0 0 auto}
+
+@media (max-width: 600px) {
+	.container{max-width:100%;padding:12px}
+	h1{font-size:1.4rem}
+	.card{padding:14px}
+	form{align-items:stretch}
+	form > input[type="file"],
+	form > input[type="text"]{flex:1 1 100%;width:100%}
+	form > button{width:100%;margin-top:8px;padding:10px}
+	.result{font-size:0.95rem}
+}
+
+/* Slight improvements for larger screens */
+@media (min-width: 1200px) {
+	.container{max-width:960px}
+}

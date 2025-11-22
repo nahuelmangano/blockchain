@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NOTARY UPE</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Notary UPE</h1>
+
+    <section class="card">
+      <h2>Notarizar documento</h2>
+      <form id="notarizeForm">
+        <input type="file" id="fileInput" name="file" required />
+        <button type="submit">Notarizar</button>
+      </form>
+      <pre id="notarizeResult" class="result" hidden></pre>
+    </section>
+
+    <section class="card">
+      <h2>Verificar File hash</h2>
+      <form id="verifyForm">
+        <input type="text" id="hashInput" placeholder="0x..." required />
+        <button type="submit">Verificar</button>
+      </form>
+      <pre id="verifyResult" class="result" hidden></pre>
+    </section>
+
+    <footer>
+      <small>Desarrollo para uso interno <code>UPE</code></small>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

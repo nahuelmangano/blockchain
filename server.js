@@ -7,6 +7,10 @@ import "dotenv/config";
 const upload = multer({ dest: "uploads/" });
 const app = express();
 
+// Servir archivos estáticos desde la carpeta `public/`
+// (frontend simple que añadimos para interactuar con la API)
+app.use(express.static("public"));
+
 const provider = new JsonRpcProvider(process.env.RPC_URL);
 const wallet = new Wallet(process.env.PRIVATE_KEY, provider);
 
@@ -29,7 +33,9 @@ app.post("/notarize", upload.single("file"), async (req, res) => {
     const fileHash = keccak256(fileBuf);
     const tx = await contract.notarize(fileHash, "");
     const receipt = await tx.wait();
-    res.json({ fileHash, txHash: tx.hash, blockNumber: receipt.blockNumber });
+  // Convertir blockNumber a string (puede ser BigInt) para evitar errores de serialización
+  const blockNumber = receipt.blockNumber?.toString?.() ?? String(receipt.blockNumber);
+  res.json({ fileHash, txHash: tx.hash, blockNumber });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: String(err?.message || err) });
@@ -40,7 +46,9 @@ app.get("/verify", async (req, res) => {
   try {
     const { hash } = req.query;
     const [exists, owner, timestamp, uri] = await contract.isNotarized(hash);
-    res.json({ exists, owner, timestamp, uri });
+    // timestamp may be a BigInt / BigNumber depending on ethers version.
+    // Convert to string to avoid JSON serialization errors: "Do not know how to serialize a BigInt"
+    res.json({ exists, owner, timestamp: timestamp?.toString?.() ?? String(timestamp), uri });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: String(err?.message || err) });
