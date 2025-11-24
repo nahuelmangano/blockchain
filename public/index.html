@@ -3,36 +3,51 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NOTARY UPE</title>
-  <link rel="stylesheet" href="/style.css">
+  <title>Notary UPE</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Notary UPE</h1>
+  <main class="container">
+    <header class="header">
+      <img src="./pfp/logo.png" alt="Perfil NFT Notary UPE" class="pfp" />
+      <h1>Notary UPE</h1>
+      <p class="subtitle">Protege y verifica la integridad de tus archivos en blockchain</p>
+    </header>
 
     <section class="card">
       <h2>Notarizar documento</h2>
-      <form id="notarizeForm">
-        <input type="file" id="fileInput" name="file" required />
-        <button type="submit">Notarizar</button>
+      <form id="notarizeForm" novalidate>
+        <label for="fileInput" class="file-label">Selecciona un archivo</label>
+        <input type="file" id="fileInput" name="file" required aria-describedby="notarizeHelp" />
+        <small id="notarizeHelp" class="help-text">Máximo 10 MB. Se guarda el hash en la blockchain Sepolia.</small>
+        <button type="submit" aria-live="polite">Notarizar</button>
       </form>
-      <pre id="notarizeResult" class="result" hidden></pre>
+      <pre id="notarizeResult" class="result" hidden aria-live="assertive"></pre>
     </section>
 
     <section class="card">
-      <h2>Verificar File hash</h2>
-      <form id="verifyForm">
-        <input type="text" id="hashInput" placeholder="0x..." required />
-        <button type="submit">Verificar</button>
+      <h2>Verificar hash</h2>
+      <form id="verifyForm" novalidate>
+        <label for="hashInput" class="sr-only">Hash del archivo</label>
+        <input
+          type="text"
+          id="hashInput"
+          placeholder="0x..."
+          required
+          aria-describedby="verifyHelp"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <small id="verifyHelp" class="help-text">Ingresa el hash que deseas validar.</small>
+        <button type="submit" aria-live="polite">Verificar</button>
       </form>
-      <pre id="verifyResult" class="result" hidden></pre>
+      <div id="verifyResult" class="result-html" hidden aria-live="assertive"></div>
     </section>
 
-    <footer>
+    <footer class="footer">
       <small>Desarrollo para uso interno <code>UPE</code></small>
     </footer>
-  </div>
-
-  <script src="/app.js"></script>
+  </main>
+  <script src="app.js" defer></script>
 </body>
 </html>

@@ -1,75 +1,219 @@
-:root{--bg:#f6f8fb;--card:#fff;--accent:#334155;--muted:#6b7280}
-*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial}
-html,body,#root{height:100%}
-body{margin:0;background:linear-gradient(180deg,var(--bg),#eef2ff);padding:24px;color:var(--accent)}
-.container{max-width:760px;margin:0 auto}
-h1{text-align:center;margin:8px 0 20px}
-.card{background:var(--card);padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.06);margin-bottom:16px}
-form{display:flex;gap:8px;align-items:center}
-input[type="file"]{flex:1}
-input[type="text"]{flex:1;padding:8px;border:1px solid #e6e9ef;border-radius:6px}
-button{background:#4f46e5;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer}
-.result{
-	background:#0f1724;
-	color:#e6eef8;
-	padding:12px;
-	border-radius:8px;
-	margin-top:10px;
-	width:100%;
-	box-sizing:border-box;
-	/* allow long hashes/strings to wrap instead of causing horizontal scroll */
-	white-space: pre-wrap; /* keep line breaks but wrap long lines */
-	word-break: break-word; /* break long words (hashes) */
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
-	font-size: 0.95rem;
-	line-height: 1.4;
-	/* limit height so very long outputs don't push the page; enable scrolling */
-	max-height: 280px;
-	overflow: auto;
-}
-footer{margin-top:8px;text-align:center;color:var(--muted)}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-/* Spinner and loading button styles */
-.spinner{
-  display:inline-block;
-  width:18px;
-  height:18px;
-  border:3px solid rgba(255,255,255,0.18);
-  border-top-color:#fff;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  vertical-align:middle;
-  margin-right:8px;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-.btn-loading{opacity:0.95;cursor:default}
-.btn-loading[disabled]{cursor:not-allowed;opacity:0.9}
-
-/* Responsive adjustments */
-@media (max-width: 880px) {
-	.container{padding:0 16px}
-	.card{padding:16px}
+:root {
+  --bg: linear-gradient(180deg, #f6f8fb 0%, #eef2ff 100%);
+  --card-bg: #ffffff;
+  --text-primary: #334155;
+  --text-muted: #6b7280;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --error: #e11d48;
+  --success: #22c55e;
+  --shadow: rgba(16, 24, 40, 0.1);
+  --radius: 12px;
 }
 
-/* Make form inputs wrap and stack on small screens */
-form{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-form > input[type="file"],
-form > input[type="text"]{flex:1 1 220px;min-width:0}
-form > button{flex:0 0 auto}
-
-@media (max-width: 600px) {
-	.container{max-width:100%;padding:12px}
-	h1{font-size:1.4rem}
-	.card{padding:14px}
-	form{align-items:stretch}
-	form > input[type="file"],
-	form > input[type="text"]{flex:1 1 100%;width:100%}
-	form > button{width:100%;margin-top:8px;padding:10px}
-	.result{font-size:0.95rem}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-/* Slight improvements for larger screens */
-@media (min-width: 1200px) {
-	.container{max-width:960px}
+.pfp {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
+  object-fit: cover;
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 3rem 1rem;
+}
+
+.container {
+  max-width: 480px;
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px var(--shadow);
+  padding: 2.5rem 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-weight: 700;
+  font-size: 2.2rem;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.card {
+  margin-bottom: 2rem;
+  padding: 1.75rem 1.75rem 2rem;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 18px var(--shadow);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.3rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.file-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+input[type='file'] {
+  cursor: pointer;
+  border-radius: var(--radius);
+  border: 2px dashed var(--accent);
+  padding: 1rem;
+  color: var(--accent);
+  font-weight: 600;
+  transition: border-color 0.3s ease;
+}
+
+input[type='file']:hover,
+input[type='file']:focus {
+  border-color: var(--accent-hover);
+  outline: none;
+}
+
+input[type='text'] {
+  padding: 0.85rem 1rem;
+  border: 1.8px solid #d1d5db;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type='text']:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(79, 70, 229, 0.4);
+  outline: none;
+}
+
+.help-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: -0.7rem;
+  margin-bottom: 0.5rem;
+}
+
+button {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.85rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.6);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+  box-shadow: 0 6px 18px rgba(67, 56, 202, 0.85);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.result,
+.result-html {
+  font-family: 'Fira Mono', monospace, monospace;
+  background-color: #f9fafb;
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: 0 3px 10px var(--shadow);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.result-html .ok {
+  color: var(--success);
+  font-weight: 700;
+}
+.result-html .fail {
+  color: var(--error);
+  font-weight: 700;
+}
+.result-html b {
+  color: var(--text-primary);
+}
+.result-html .field {
+  margin-bottom: 6px;
+}
+
+footer.footer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+@media (max-width: 520px) {
+  .container {
+    margin: 0 1rem;
+    padding: 2rem 1rem 2.5rem;
+  }
+
+  .header h1 {
+    font-size: 1.8rem;
+  }
+
+  .card h2 {
+    font-size: 1.2rem;
+  }
 }

@@ -18,40 +18,50 @@ notarizeForm.addEventListener('submit', async (e) => {
   notarizeResult.textContent = 'Subiendo y enviando transacción... espera';
   notarizeResult.hidden = false;
 
-  try {
-    const submitBtn = notarizeForm.querySelector('button');
-    const origBtnHtml = submitBtn.innerHTML;
-    // show spinner and disable button
-    submitBtn.disabled = true;
-    submitBtn.classList.add('btn-loading');
-    submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span>Notarizando...';
+  const submitBtn = notarizeForm.querySelector('button');
+  const origBtnHtml = submitBtn.innerHTML;
+  submitBtn.disabled = true;
+  submitBtn.classList.add('btn-loading');
+  submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span>Notarizando...';
 
+  try {
     const res = await fetch('/notarize', { method: 'POST', body: fd });
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || JSON.stringify(json));
+
     notarizeResult.textContent = JSON.stringify(json, null, 2);
-    // Copiar automáticamente el fileHash al input de verificación y enfocarlo
+    notarizeResult.style.color = ''; 
+
     if (json?.fileHash) {
       try {
         hashInput.value = json.fileHash;
-        // opcional: seleccionar el contenido y enfocar para que el usuario pueda verificar/pegar
         hashInput.focus();
         hashInput.select();
-        // desplazar la vista hacia el formulario de verificación
         document.getElementById('verifyForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
       } catch (e) {
-        // no bloquear la UI si algo falla aquí
         console.warn('No se pudo copiar el fileHash al input de verificación', e);
       }
     }
-    // restore button state
+  } catch (err) {
+    if (err.message.includes('ya registrado')) {
+      notarizeResult.textContent = 'Este archivo ya se encuentra registrado en la blockchain.';
+      notarizeResult.style.color = '#e11d48'; 
+    } else {
+      notarizeResult.textContent = 'Error: ' + err.message;
+      notarizeResult.style.color = '#e11d48'; 
+    }
+  } finally {
     submitBtn.disabled = false;
     submitBtn.classList.remove('btn-loading');
     submitBtn.innerHTML = origBtnHtml;
-  } catch (err) {
-    notarizeResult.textContent = 'Error: ' + err.message;
   }
 });
+
+
+function formatTimestamp(ts) {
+  const date = new Date(Number(ts) * 1000);
+  return date.toLocaleString();
+}
 
 verifyForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -66,7 +76,18 @@ verifyForm.addEventListener('submit', async (e) => {
     const res = await fetch('/verify?hash=' + encodeURIComponent(hash));
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || JSON.stringify(json));
-    verifyResult.textContent = JSON.stringify(json, null, 2);
+    let fecha = "(No registrado)";
+    if (json.timestamp && json.exists) {
+      fecha = formatTimestamp(json.timestamp);
+    }
+
+    verifyResult.innerHTML = `
+  <div class="field"><b>Estado:</b> ${json.exists ? '<span class="ok">Notarizado</span>' : '<span class="fail">No encontrado</span>'}</div>
+  <div class="field"><b>Propietario:</b> ${json.owner}</div>
+  <div class="field"><b>Fecha de registro:</b> ${fecha}</div>
+  <div class="field"><b>Hash:</b> ${hash}</div>
+  <div class="field"><b>URI:</b> ${json.uri || '(no hay dato)'}</div>
+`;
   } catch (err) {
     verifyResult.textContent = 'Error: ' + err.message;
   }
