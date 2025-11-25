@@ -30,7 +30,7 @@ notarizeForm.addEventListener('submit', async (e) => {
     if (!res.ok) throw new Error(json.error || JSON.stringify(json));
 
     notarizeResult.textContent = JSON.stringify(json, null, 2);
-    notarizeResult.style.color = ''; 
+    notarizeResult.style.color = '';
 
     if (json?.fileHash) {
       try {
@@ -42,13 +42,16 @@ notarizeForm.addEventListener('submit', async (e) => {
         console.warn('No se pudo copiar el fileHash al input de verificación', e);
       }
     }
+    const downloadCert = document.getElementById('downloadCert');
+    downloadCert.href = `/certificado/${json.fileHash}`;
+    downloadCert.style.display = 'inline-block';
   } catch (err) {
     if (err.message.includes('ya registrado')) {
       notarizeResult.textContent = 'Este archivo ya se encuentra registrado en la blockchain.';
-      notarizeResult.style.color = '#e11d48'; 
+      notarizeResult.style.color = '#e11d48';
     } else {
       notarizeResult.textContent = 'Error: ' + err.message;
-      notarizeResult.style.color = '#e11d48'; 
+      notarizeResult.style.color = '#e11d48';
     }
   } finally {
     submitBtn.disabled = false;
